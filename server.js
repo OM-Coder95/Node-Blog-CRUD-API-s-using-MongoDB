@@ -56,7 +56,7 @@ app.post('/api/blog', async (req, res) => {
         if (err.name === 'ValidationError') {
             return res.status(400).json({
                 message: 'Validation Error',
-                error: err.errors
+                error: Object.values(err.errors).map(e => e.message)
             })
         }
 
@@ -80,7 +80,7 @@ app.get('/api/blog', async (req, res) => {
         if (err.name === 'ValidationError') {
             res.status(400).json({
                 message: 'Validation Errors',
-                error: err.errors
+                error: Object.values(err.errors).map(e => e.message)
             })
         }
 
@@ -111,7 +111,13 @@ app.get('/api/blog/:id', async (req, res) => {
         if (err.name === 'ValidationError') {
             return res.status(400).json({
                 message: 'Validation Error',
-                error: err.errors
+                error: Object.values(err.errors).map(e => e.message)
+            })
+        }
+
+        if (err.name === "CastError") {
+            return res.status(400).json({
+                message: "Invalid MongoDB Id"
             })
         }
 
@@ -147,8 +153,14 @@ app.patch("/api/blog/:id", async (req, res) => {
     } catch (err) {
         if (err.name === "ValidationError") {
             return res.status(400).json({
-                message: 'Validation Error',
-                error: err.errors
+                message: "Validation Error",
+                errors: Object.values(err.errors).map(error => error.message)
+            })
+        }
+
+        if (err.name === "CastError") {
+            return res.status(400).json({
+                message: "Invalid MongoDB Id"
             })
         }
 
@@ -180,7 +192,13 @@ app.delete("/api/blog/:id", async (req, res) => {
         if (err.name === "ValidationError") {
             return res.status(400).json({
                 message: 'Validation Error',
-                error: err.errors
+                error: Object.values(err.errors).map(e => e.message)
+            })
+        }
+
+        if (err.name === "CastError") {
+            return res.status(400).json({
+                message: "Invalid MongoDB Id"
             })
         }
 
